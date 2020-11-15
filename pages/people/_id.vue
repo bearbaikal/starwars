@@ -17,17 +17,19 @@
 			      	</v-col>
 			      	<v-col>
 			      		<b>Films</b>
-			      		{{ films }}
-			      		<ul>
-			      			<li>
-	      					</li>
-		      			</ul>
+			        	<ul v-if="films">
+			        		<li v-for="(film, film_index) in films">
+			        			{{ film.title }}
+			        		</li>
+			        	</ul>
+			        	<div v-else>There aren't films with me :(</div>
 		      		</v-col>
 		      	</v-row>
 		      	<NuxtLink to="/people">Back to list</NuxtLink>
 		      </v-card>
 		    </v-col>
 		  </v-row>
+		  <Loading />
 	  </v-col>
   </v-row>
 </template>
@@ -47,7 +49,6 @@
         axios.get("https://swapi.dev/api/people/" + this.$route.params.id, {
         }).then(response => {
           this.person = response.data
-          console.log(this.person)
 	  			if (this.person.films.length) {
 		  			this.person.films.forEach((film_link, undefined, film_arr) => {
 			        axios.get(film_link, {
@@ -57,10 +58,9 @@
 			      	})
 	  				})
 					}				
+					this.$store.commit('update_loading', false)
         })
 	  	}
   	}
 	}
 </script>
-<style scoped>
-</style>

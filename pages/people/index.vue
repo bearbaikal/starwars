@@ -3,7 +3,7 @@
 		<v-col cols="2"></v-col>
 		<v-col cols="8">
 		  <v-row>
-		    <v-col md="6" xs="12" v-for="(person, pers_index) in people" :key="person.name"  style="height:100%">
+		    <v-col md="6" xs="12" v-for="(person, person_index) in people" :key="person.name"  style="height:100%">
 		      <v-card class="person-card">
 		      	<h1>{{ person.name }}</h1>
 		      	<v-row>
@@ -15,8 +15,7 @@
 			        <v-col xs="6">
 			        	<b>Vehicles</b>
 			        	<ul v-if="person.vehicles.length">
-			        		
-			        		<li v-for="(vehicle, veh_index) in vehicles[pers_index]">
+			        		<li v-for="(vehicle, vehicle_index) in vehicles[person_index]">
 			        			{{ vehicle['name'] }}
 			        		</li>
 			        	</ul>
@@ -58,23 +57,23 @@
         }).then(response => {
         	let data = response.data
           this.people = data.results
-          this.$store.commit('update_loading', false)
           this.vehicles = []
-		  		this.people.forEach((pers, pers_index, pers_arr) => {
+		  		this.people.forEach((person, person_index, people_array) => {
 		  			this.vehicles.push([])
-		  			pers_arr[pers_index].app_url = "/people/" + pers.url.split("/")[5]
-		  			if (pers.vehicles.length) {
-			  			pers.vehicles.forEach((veh_link, veh_index, veh_arr) => {
-				        axios.get(veh_link, {
+		  			people_array[person_index].app_url = "/people/" + person.url.split("/")[5]
+		  			if (person.vehicles.length) {
+			  			person.vehicles.forEach((vehicle_link) => {
+				        axios.get(vehicle_link, {
 		  		      }).then(response => {
-		  		      	let veh_name = response.data.name
-		  		      	this.vehicles[pers_index].push({ name: veh_name })
+		  		      	let vehicle_name = response.data.name
+		  		      	this.vehicles[person_index].push({ name: vehicle_name })
 				      	})
 		  				})
 						}				
 		  		})
           this.paginator.pages_count = Math.floor(data.count/10) + 1
           this.paginator.loading = false
+          this.$store.commit('update_loading', false)
         })
 	  	},
 	  	set_loading(value){
@@ -88,5 +87,3 @@
   	}
 	}
 </script>
-<style scoped>
-</style>
