@@ -6,10 +6,25 @@
 		    <v-col md="12" xs="12">
 		      <v-card class="person-card">
 		      	<h1>{{ person.name }}</h1>
-		      	Height: {{ person.height }}
-		      	Hair color: {{ person.hair_color }}
-		      	Eye color: {{ person.eye_color }}
-		      	Birth year: {{ person.birth_year }}
+		      	<v-row>
+		      		<v-col xs="6">
+				      	Height: {{ person.height }}<br>
+				      	Mass: {{ person.mass }}<br>
+				      	Skin color: {{ person.grey }}<br>
+				      	Hair color: {{ person.hair_color }}<br>
+				      	Eye color: {{ person.eye_color }}<br>
+				      	Birth year: {{ person.birth_year }}<br>
+			      	</v-col>
+			      	<v-col>
+			      		<b>Films</b>
+			      		{{ films }}
+			      		<ul>
+			      			<li>
+	      					</li>
+		      			</ul>
+		      		</v-col>
+		      	</v-row>
+		      	<NuxtLink to="/people">Back to list</NuxtLink>
 		      </v-card>
 		    </v-col>
 		  </v-row>
@@ -29,37 +44,23 @@
   	},
 	  methods: {
 	  	get_person(){
-	  		let person_number = this.$route.params.id
-	  		let page_number = Math.floor(person_number/10)
-	  		person_number - page_number * 10 ? page_number++ : undefined;
-	  		let person_index = person_number - (page_number - 1) * 10 -1
-        axios.get("https://swapi.dev/api/people/", {
-        	params: { page: page_number}
+        axios.get("https://swapi.dev/api/people/" + this.$route.params.id, {
         }).then(response => {
-          this.person = response.data.results[person_index]
-          this.get_films()
+          this.person = response.data
+          console.log(this.person)
+	  			if (this.person.films.length) {
+		  			this.person.films.forEach((film_link, undefined, film_arr) => {
+			        axios.get(film_link, {
+	  		      }).then(response => {
+	  		      	let film_title = response.data.title
+	  		      	this.films.push({ title: film_title })
+			      	})
+	  				})
+					}				
         })
-	  	},
-	  	get_films(){
-	  		// this.people.forEach((pers, pers_index, pers_arr) => {
-	  		// 	this.vehicles.push([])
-	  		// 	if (pers.vehicles.length) {
-		  	// 		pers.vehicles.forEach((veh_link, veh_index, veh_arr) => {
-			  //       axios.get(veh_link, {
-	  		//       }).then(response => {
-	  		//       	let veh_name = response.data.name
-	  		//       	this.vehicles[pers_index].push({ name: veh_name, link: veh_link })
-			  //     	})
-	  		// 		})
-					// }				
-	  		// })
 	  	}
   	}
 	}
 </script>
 <style scoped>
-	h1{font-size:1.2rem;}
-	.person-card{padding:20px 30px 10px;min-width:300px;}
-	ul{list-style-type:none;padding-left:0;}
-	li{padding-left:0;}
 </style>
