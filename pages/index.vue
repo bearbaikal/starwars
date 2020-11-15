@@ -26,6 +26,14 @@
 		      </v-card>
 		    </v-col>
 		  </v-row>
+      <v-pagination
+          v-model="paginator.page"
+          v-if="!paginator.loading"
+          @input="get_people"
+          :length="paginator.pages_count"
+          :total-visible="16"
+          class="my-2 mx-15">
+      </v-pagination>
 	  </v-col>
   </v-row>
 </template>
@@ -35,7 +43,8 @@
 	export default {
 	  data: () => ({
 	  	people: [],
-	  	vehicles: []
+	  	vehicles: [],
+			paginator: { page:1, pages_count:1, loading:true }
 	  }),
 	  created() {
 	  	this.get_people()
@@ -43,30 +52,30 @@
 	  methods: {
 	  	get_people(){
         axios.get("https://swapi.dev/api/people/", {
+        	params: { page: this.paginator.page}
         }).then(response => {
-          //console.log(response.data)
-          this.people = response.data.results
+        	console.log("page:" + this.paginator.page)
+        	let data = response.data
+          this.people = data.results
+          this.vehicles = []
           this.get_vehicles()
+          this.paginator.pages_count = Math.floor(data.count/10) + 1
+          this.paginator.loading = false
         })
 	  	},
 	  	get_vehicles(){
 	  		this.people.forEach((pers, pers_index, pers_arr) => {
 	  			this.vehicles.push([])
 	  			if (pers.vehicles.length) {
-	  				console.log(pers_index)
 		  			pers.vehicles.forEach((veh_link, veh_index, veh_arr) => {
 			        axios.get(veh_link, {
 	  		      }).then(response => {
 	  		      	let veh_name = response.data.name
-	  		      	console.log(veh_link)
-	  		      	console.log(veh_name)
-	  		      	this.vehicles[pers_index].push({link: veh_link, name: veh_name})
+	  		      	this.vehicles[pers_index].push({ name: veh_name, link: veh_link })
 			      	})
 	  				})
 					}				
 	  		})
-	  		console.log("Vehicles:")
-	  		console.log(this.vehicles)
 	  	}
   	}
 	}
