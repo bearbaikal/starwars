@@ -4,7 +4,7 @@
 		<v-col cols="8">
 		  <v-row>
 		    <v-col md="6" xs="12" v-for="(person, pers_index) in people" :key="person.name"  style="height:100%">
-		      <v-card class="person-card" style="height:100%">
+		      <v-card class="person-card">
 		      	<h1>{{ person.name }}</h1>
 		      	<v-row>
 		      		<v-col cols="6">
@@ -54,7 +54,6 @@
         axios.get("https://swapi.dev/api/people/", {
         	params: { page: this.paginator.page}
         }).then(response => {
-        	console.log("page:" + this.paginator.page)
         	let data = response.data
           this.people = data.results
           this.vehicles = []
