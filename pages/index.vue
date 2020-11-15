@@ -2,18 +2,27 @@
 	<v-row>
 		<v-col cols="2"></v-col>
 		<v-col cols="8">
-		  <v-row justify="center" align="center">
-		    <v-col cols="6" v-for="(person, pers_index) in people" :key="person.name">
-		      <v-card class="person-card">
-		        <h1>{{ person.name }}</h1>
-		        <div>Gender: {{ person.gender }}</div>
-		        <div>Height: {{ person.height }}</div>
-		        <div>Mass: {{ person.mass }}</div>
-	        	<ul v-if="person.vehicles.length">
-	        		<li v-for="(vehicle, veh_index) in vehicles[pers_index]">
-	        			{{ vehicle['name'] }}
-	        		</li>
-	        	</ul>
+		  <v-row>
+		    <v-col md="6" xs="12" v-for="(person, pers_index) in people" :key="person.name"  style="height:100%">
+		      <v-card class="person-card" style="height:100%">
+		      	<h1>{{ person.name }}</h1>
+		      	<v-row>
+		      		<v-col cols="6">
+				        <div>Gender: {{ person.gender }}</div>
+				        <div>Height: {{ person.height }}</div>
+				        <div>Mass: {{ person.mass }}</div>
+			        </v-col>
+			        <v-col cols="6">
+			        	<b>Vehicles</b>
+			        	<ul v-if="person.vehicles.length">
+			        		
+			        		<li v-for="(vehicle, veh_index) in vehicles[pers_index]">
+			        			{{ vehicle['name'] }}
+			        		</li>
+			        	</ul>
+			        	<div v-else>I don't have vehicle :)</div>
+							</v-col>			        	
+		        </v-row>
 		      </v-card>
 		    </v-col>
 		  </v-row>
@@ -64,5 +73,7 @@
 </script>
 <style scoped>
 	h1{font-size:1.2rem;}
-	.person-card{padding:10px 30px;}
+	.person-card{padding:20px 30px 10px;min-width:300px;}
+	ul{list-style-type:none;padding-left:0;}
+	li{padding-left:0;}
 </style>
