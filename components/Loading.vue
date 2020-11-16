@@ -12,13 +12,11 @@
 </template>
 <script>
 	export default {
-  	computed: {
-  		loading() {
-  			return this.$store.state.loading
-  		}
-  	}
+		props: {
+			loading: Boolean
+		}
 	}
 </script>
 <style scoped>
-	.progress{background-color: rgba(255, 255, 255, 0.5);}
+	.progress{background-color: rgba(255, 255, 255, 0.2);}
 </style>

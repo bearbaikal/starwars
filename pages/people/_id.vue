@@ -29,36 +29,44 @@
 		      </v-card>
 		    </v-col>
 		  </v-row>
-		  <Loading />
+		  <Loading :loading="loading"/>
 	  </v-col>
   </v-row>
 </template>
 
 <script>
 	import axios from 'axios'
+	var count = 0
 	export default {
 	  data: () => ({
 	  	person: {},
-	  	films: []
+	  	films: [],
+	  	loading: true
 	  }),
 	  created() {
-	  	this.get_person()
-  	},
+	  	this.get_person( () => {
+        count--
+        0 == count ? this.loading = false : undefined;
+      })
+  	},	
 	  methods: {
-	  	get_person(){
+	  	get_person(callback){
         axios.get("https://swapi.dev/api/people/" + this.$route.params.id, {
         }).then(response => {
           this.person = response.data
-	  			if (this.person.films.length) {
+	  			if (count = this.person.films.length) {
 		  			this.person.films.forEach((film_link, undefined, film_arr) => {
 			        axios.get(film_link, {
+			        	progress: true
 	  		      }).then(response => {
+	  		      	callback()
 	  		      	let film_title = response.data.title
 	  		      	this.films.push({ title: film_title })
 			      	})
 	  				})
+					} else {
+						this.loading = false
 					}				
-					this.$store.commit('update_loading', false)
         })
 	  	}
   	}

@@ -34,24 +34,29 @@
           :total-visible="16"
           class="my-2 mx-15">
       </v-pagination>
-      <Loading />
+      <Loading :loading="loading"/>
 	  </v-col>
   </v-row>
 </template>
 
 <script>
 	import axios from 'axios'
+	var count = 0
 	export default {
 	  data: () => ({
 	  	people: [],
 	  	vehicles: [],
-			paginator: { page:1, pages_count:1, loading:true }
+			paginator: { page:1, pages_count:1, loading:true },
+			loading: true
 	  }),
 	  created() {
-	  	this.get_people()
+	  	this.get_people( () => {
+        count--
+        0 == count ? this.loading = false : undefined;
+	    })
   	},
 	  methods: {
-	  	get_people(){
+	  	get_people(callback){
         axios.get("https://swapi.dev/api/people/", {
         	params: { page: this.paginator.page}
         }).then(response => {
@@ -62,9 +67,11 @@
 		  			this.vehicles.push([])
 		  			people_array[person_index].app_url = "/people/" + person.url.split("/")[5]
 		  			if (person.vehicles.length) {
+		  				count += person.vehicles.length
 			  			person.vehicles.forEach((vehicle_link) => {
 				        axios.get(vehicle_link, {
 		  		      }).then(response => {
+		  		      	callback()
 		  		      	let vehicle_name = response.data.name
 		  		      	this.vehicles[person_index].push({ name: vehicle_name })
 				      	})
@@ -73,17 +80,8 @@
 		  		})
           this.paginator.pages_count = Math.floor(data.count/10) + 1
           this.paginator.loading = false
-          this.$store.commit('update_loading', false)
         })
-	  	},
-	  	set_loading(value){
-	  		this.loading = value
 	  	}
-  	},
-  	computed: {
-  		loading() {
-  			return this.$store.state.loading
-  		}
   	}
 	}
 </script>
