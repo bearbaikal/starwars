@@ -29,7 +29,7 @@
       <v-pagination
           v-model="paginator.page"
           v-if="!paginator.loading"
-          @input="get_people"
+          @input="load_page"
           :length="paginator.pages_count"
           :total-visible="16"
           class="my-2 mx-15">
@@ -50,13 +50,17 @@
 			loading: true
 	  }),
 	  created() {
-	  	this.get_people( () => {
-        count--
-        0 == count ? this.loading = false : undefined;
-	    })
+	  	this.load_page()
   	},
 	  methods: {
-	  	get_people(callback){
+	  	load_page() {
+	  		this.loading = true
+		  	this.get_people( () => {
+  	      count--
+    	    0 == count ? this.loading = false : undefined;
+	    	})
+	  	},
+	  	get_people(callback) {
         axios.get("https://swapi.dev/api/people/", {
         	params: { page: this.paginator.page}
         }).then(response => {
@@ -66,6 +70,7 @@
 		  		this.people.forEach((person, person_index, people_array) => {
 		  			this.vehicles.push([])
 		  			people_array[person_index].app_url = "/people/" + person.url.split("/")[5]
+		  			count++
 		  			if (person.vehicles.length) {
 		  				count += person.vehicles.length
 			  			person.vehicles.forEach((vehicle_link) => {
@@ -76,7 +81,8 @@
 		  		      	this.vehicles[person_index].push({ name: vehicle_name })
 				      	})
 		  				})
-						}				
+						}
+						callback()
 		  		})
           this.paginator.pages_count = Math.floor(data.count/10) + 1
           this.paginator.loading = false
