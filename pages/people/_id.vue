@@ -37,7 +37,7 @@
 <script>
 	import axios from 'axios'
 	var count = 0
-	export default {
+	export default {		
 	  data: () => ({
 	  	person: {},
 	  	films: [],

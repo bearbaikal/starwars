@@ -2,6 +2,11 @@
   <v-app dark>
     <v-main>
       <v-container fluid ma-0 pa-0 fill-height>
+        <v-row>
+          <v-col xs="12" class="text-center">
+            <h1>StarWars</h1>
+          </v-col>
+        </v-row>
         <nuxt />
       </v-container>
     </v-main>
@@ -41,3 +46,6 @@ export default {
   }
 }
 </script>
+<style scoped>
+ h1{font-size:2.8rem;}
+</style>
